@@ -548,8 +548,8 @@ function openPanel(ep){
   if(ts.length === 0){
     body.innerHTML = `<div style="padding:2rem 1.25rem;text-align:center;color:var(--text-muted);font-size:.875rem">No timestamps available for this episode.</div>`;
   } else {
-    const guestTs = ts.filter(t=>t.is_guest);
-    const topicTs = ts.filter(t=>!t.is_guest);
+    const guestTs = ts.filter(t=>t.is_guest || t.type==='guest');
+    const topicTs = ts.filter(t=>!t.is_guest && t.type!=='guest');
 
     let html = '';
     if(topicTs.length){
@@ -558,7 +558,7 @@ function openPanel(ep){
         const url = ytUrl(vid, t.seconds);
         html += `<li><a href="${url}" target="_blank" rel="noopener" class="ts-item">
           <span class="ts-time">${escHtml(t.time)}</span>
-          <span class="ts-desc">${escHtml(t.desc)}</span>
+          <span class="ts-desc">${escHtml(t.description)}</span>
           <svg class="ts-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a></li>`;
       });
@@ -570,7 +570,7 @@ function openPanel(ep){
         const url = ytUrl(vid, t.seconds);
         html += `<li><a href="${url}" target="_blank" rel="noopener" class="ts-item is-guest">
           <span class="ts-time" style="background:var(--guest-dim);color:var(--guest-color)">${escHtml(t.time)}</span>
-          <span class="ts-desc">${escHtml(t.desc)}</span>
+          <span class="ts-desc">${escHtml(t.description)}</span>
           <svg class="ts-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a></li>`;
       });
@@ -605,7 +605,7 @@ function filterEpisodes(q){
   return EPISODES.filter(ep => {
     if(ep.title.toLowerCase().includes(lower)) return true;
     if(ep.date.includes(lower)) return true;
-    if(ep.timestamps && ep.timestamps.some(t => t.desc && t.desc.toLowerCase().includes(lower))) return true;
+    if(ep.timestamps && ep.timestamps.some(t => t.description && t.description.toLowerCase().includes(lower))) return true;
     return false;
   });
 }
